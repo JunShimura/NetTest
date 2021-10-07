@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -96,6 +97,7 @@ namespace ChatSystem
         }
         static void InChatBot()
         {
+            Random random = new Random();
             ChatSystem.Buffer buffer = new ChatSystem.Buffer(maxLength);
             bool turn = (connectMode == ChatSystem.ConnectMode.host);
             string received = string.Empty;
@@ -130,9 +132,15 @@ namespace ChatSystem
                 {   // 送信
                     string inputSt = string.Empty;
                     Console.Write("送るメッセージ：");
-                    if(connectMode == ChatSystem.ConnectMode.host)
+                    if (connectMode == ChatSystem.ConnectMode.host)
                     {   // Host
-                        inputSt = "同じ返事しかしませんよ";
+                        inputSt = BotRep(received);
+                        if (inputSt == string.Empty)
+                        {
+                            //　ランダムに言葉を返す
+                            string[] randomRep = { "それは良い質問だ", "Me Too", "私それ気になる！", "そうだね！", "分かるわぁそれ！", "いいね！", "今北産業" };
+                            inputSt = randomRep[random.Next(randomRep.Length)];
+                        }
                         Console.Write(inputSt);
                     }
                     else
@@ -210,6 +218,46 @@ namespace ChatSystem
                 turn = !turn;
             }
             chatSystem.ShutDownColse();
+        }
+
+        static string BotRep(string received)
+        {
+            string retrnStr = string.Empty;
+            RepDictionary[] repDictionaries = {
+                new RepDictionary(new string[] { "おはよう", "おはようございます", "Good morning" },"おはよう！"),
+                new RepDictionary(new string[] { "こんにちは", "hello" },"こんにちは！"),
+                new RepDictionary(new string[] {"すき","好き","I love you" } ,"私も好き！"),
+                new RepDictionary(new string[] { "うんこ", "poop" },"うんこもりもり森鴎外！"),
+                };
+            for (var i = 0; i < repDictionaries.Length; i++)
+            {
+                retrnStr += repDictionaries[i].GetRep(received);
+            }
+            return retrnStr;
+        }
+
+        public class RepDictionary
+        {
+            public List<string> received;
+            public string rep;
+            public RepDictionary(string[] aReceived, string aRep)
+            {
+                this.received = new List<string>(aReceived);
+                this.rep = aRep;
+            }
+            public string GetRep(string aReceived)
+            {
+                string returnString = string.Empty;
+                for (var i = 0; i < received.Count; i++)
+                {
+                    if (aReceived.Contains(received[i]))
+                    {
+                        returnString = rep;
+                        break;
+                    }
+                }
+                return returnString;
+            }
         }
     }
 }
