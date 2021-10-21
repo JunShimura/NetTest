@@ -9,11 +9,12 @@ namespace ChatSystem
     class RepDictionary
     {
         List<string> received;
-        string rep;
-        public RepDictionary(string[] aReceived, string aRep)
+        List<string> rep;
+        Random random = new Random();
+        public RepDictionary(string[] aReceived, string[] aRep)
         {
             this.received = new List<string>(aReceived);
-            this.rep = aRep;
+            this.rep = new List<string>(aRep);
         }
         public string GetRep(string aReceived)
         {
@@ -22,7 +23,7 @@ namespace ChatSystem
             {
                 if (aReceived.Contains(received[i]))
                 {
-                    returnString = rep;
+                    returnString = rep[random.Next(rep.Count)];
                     break;
                 }
             }

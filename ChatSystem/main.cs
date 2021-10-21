@@ -98,15 +98,13 @@ namespace ChatSystem
         static void InChatBot()
         {
             RepDictionary[] repDictionaries = {
-                new RepDictionary(new string[] { "おはよう", "おはようございます", "Good morning" },"おはよう！"),
-                new RepDictionary(new string[] { "こんにちは", "hello" },"こんにちは！"),
-                new RepDictionary(new string[] {"すき","好き","I love you" } ,"私も好き！"),
-                new RepDictionary(new string[] { "うんこ", "poop" },"うんこもりもり森鴎外！"),
+                new RepDictionary(new string[] { "おはよう", "おはようございます", "Good morning" },new string[]{"おはよう！","おはようごぜえます、旦那様" }),
+                new RepDictionary(new string[] { "こんにちは", "hello" },new string[]{"こんにちは！" }),
+                new RepDictionary(new string[] {"すき","好き","I love you" } ,new string[]{"私も好き！" }),
+                new RepDictionary(new string[] { "おはよう","うんこ", "poop" },new string[]{"うんこもりもり森鴎外！" }),
                 };
             BotRep botRep = new BotRep(repDictionaries);
-
             Random random = new Random();
-
             ChatSystem.Buffer buffer = new ChatSystem.Buffer(maxLength);
             bool turn = (connectMode == ChatSystem.ConnectMode.host);
             string received = string.Empty;
