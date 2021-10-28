@@ -31,6 +31,9 @@ namespace ChatSystem
                 case FunctionMode.bot:
                     InChatBot();
                     break;
+                case FunctionMode.janken:
+                    InChatJanken();
+                    break;
                 default:
                     Console.WriteLine("not suported");
                     break;
@@ -225,6 +228,87 @@ namespace ChatSystem
                 turn = !turn;
             }
             chatSystem.ShutDownColse();
+        }
+        
+        static string[] hand = { "ぐう", "ちょき", "ぱあ" };
+        static void InChatJanken()
+        {
+            Random random = new Random();
+            ChatSystem.Buffer buffer = new ChatSystem.Buffer(maxLength);
+            bool turn = (connectMode == ChatSystem.ConnectMode.host);
+            while (true)
+            {
+                if (turn)
+                {   // 受信
+                    buffer = new ChatSystem.Buffer(maxLength);
+                    ChatSystem.EResult re = chatSystem.Receive(buffer);
+                    if (re == ChatSystem.EResult.success)
+                    {
+                        string received = Encoding.UTF8.GetString(buffer.content).Replace(EOF, "");
+                        int l = received.Length;
+                        if (received[0] != '\0')
+                        {   // 正常にメッセージを受信
+                            int hostHand = random.Next(hand.Length);
+                            int clientHand = int.Parse(received);
+                            Console.WriteLine($"自分は{hand[hostHand]}、相手は{hand[clientHand]}");
+                            Console.WriteLine($"受信メッセージ：{received}");
+                        }
+                        else
+                        {   // 正常に終了を受信
+                            Console.WriteLine("相手から終了を受信");
+                            break;
+                        }
+                    }
+                    else
+                    {   //　受信エラー
+                        Console.WriteLine($"受信エラー：{chatSystem.resultMessage} ");
+                        break;
+                    }
+                }
+                else
+                {   // 送信
+
+                    string inputSt = GetJankenHand().ToString();
+
+                    if (inputSt.Length > maxLength)
+                    {
+                        inputSt = inputSt.Substring(0, maxLength - EOF.Length);
+                    }
+                    inputSt += EOF;
+                    buffer.content = Encoding.UTF8.GetBytes(inputSt);
+                    buffer.length = buffer.content.Length;
+                    ChatSystem.EResult re = chatSystem.Send(buffer);
+                    if (re != ChatSystem.EResult.success)
+                    {
+                        Console.WriteLine($"送信エラー：{re.ToString()} Error code: {chatSystem.resultMessage}");
+                        break;
+                    }
+                }
+                turn = !turn;
+            }
+            chatSystem.ShutDownColse();
+        }
+
+        static int GetJankenHand()
+        {
+            Console.WriteLine("じゃんけんをしましょう！");
+            for (var i = 0; i < hand.Length; i++)
+            {
+                Console.WriteLine($"{i}:{hand[i]}");
+            }
+            string inputSt = string.Empty;
+            int inputNum;
+            while (true)
+            {
+                inputSt = Console.ReadLine();    // 入力文字
+                if (int.TryParse(inputSt, out inputNum) && inputNum >= 0 && inputNum < hand.Length)
+                {
+                    Console.WriteLine($"あなたの手は{hand[inputNum]}ですね");
+                    break;
+                }
+                Console.WriteLine("規定の数値を入力してください");
+            }
+            return inputNum;
         }
     }
 }
