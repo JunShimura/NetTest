@@ -229,7 +229,7 @@ namespace ChatSystem
             }
             chatSystem.ShutDownColse();
         }
-        
+
         static string[] hand = { "ぐう", "ちょき", "ぱあ" };
         static void InChatJanken()
         {
@@ -253,11 +253,21 @@ namespace ChatSystem
                                 int hostHand = random.Next(hand.Length);
                                 int clientHand = int.Parse(received);
                                 //(ホストークライアント + 3) % 3で勝敗を判定
-                                int result = (hostHand - clientHand + hand.Length) % hand.Length;
+                                //int result = (hostHand - clientHand + hand.Length) % hand.Length;
                                 string[] resultMessagge = { "あいこ", "負け", "勝ち" };
-                                Console.WriteLine($"自分は{hand[hostHand]}、相手は{hand[clientHand]}\n{resultMessagge[result]}です");
+                                int[,,] judgeTable
+                                    = {
+                                        {   // host
+                                            {0,  2,1 },{1,0,2},{ 2,1,0 }
+                                        },
+                                        {   // client
+                                            {0,1,2},{2,0,1 },{ 1,2,0}
+                                        },
+                                };
+                                Console.WriteLine(
+                                    $"自分は{hand[hostHand]}、相手は{hand[clientHand]}\n{resultMessagge[judgeTable[0, hostHand, clientHand]]}です");
                                 int clientResult = (clientHand - hostHand + hand.Length) % hand.Length;
-                                string inputSt = $"あいては{hand[hostHand]}、{resultMessagge[clientResult]}です";
+                                string inputSt = $"あいては{hand[hostHand]}、{resultMessagge[judgeTable[1, hostHand, clientHand]]}です";
                                 if (inputSt.Length > maxLength)
                                 {
                                     inputSt = inputSt.Substring(0, maxLength - EOF.Length);
