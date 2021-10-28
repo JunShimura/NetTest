@@ -265,7 +265,7 @@ namespace ChatSystem
                                 inputSt += EOF;
                                 buffer.content = Encoding.UTF8.GetBytes(inputSt);
                                 buffer.length = buffer.content.Length;
-                                ChatSystem.EResult re = chatSystem.Send(buffer);
+                                re = chatSystem.Send(buffer);
                                 if (re != ChatSystem.EResult.success)
                                 {
                                     Console.WriteLine($"送信エラー：{re.ToString()} Error code: {chatSystem.resultMessage}");
