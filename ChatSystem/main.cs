@@ -248,10 +248,34 @@ namespace ChatSystem
                         int l = received.Length;
                         if (received[0] != '\0')
                         {   // 正常にメッセージを受信
-                            int hostHand = random.Next(hand.Length);
-                            int clientHand = int.Parse(received);
-                            Console.WriteLine($"自分は{hand[hostHand]}、相手は{hand[clientHand]}");
-                            Console.WriteLine($"受信メッセージ：{received}");
+                            if (connectMode == ChatSystem.ConnectMode.host)
+                            {
+                                int hostHand = random.Next(hand.Length);
+                                int clientHand = int.Parse(received);
+                                //(ホストークライアント + 3) % 3で勝敗を判定
+                                int result = (hostHand - clientHand + hand.Length) % hand.Length;
+                                string[] resultMessagge = { "あいこ", "負け", "勝ち" };
+                                Console.WriteLine($"自分は{hand[hostHand]}、相手は{hand[clientHand]}\n{resultMessagge[result]}です");
+                                int clientResult = (clientHand - hostHand + hand.Length) % hand.Length;
+                                string inputSt = $"あいては{hand[hostHand]}、{resultMessagge[clientResult]}です";
+                                if (inputSt.Length > maxLength)
+                                {
+                                    inputSt = inputSt.Substring(0, maxLength - EOF.Length);
+                                }
+                                inputSt += EOF;
+                                buffer.content = Encoding.UTF8.GetBytes(inputSt);
+                                buffer.length = buffer.content.Length;
+                                ChatSystem.EResult re = chatSystem.Send(buffer);
+                                if (re != ChatSystem.EResult.success)
+                                {
+                                    Console.WriteLine($"送信エラー：{re.ToString()} Error code: {chatSystem.resultMessage}");
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine(received);
+                            }
                         }
                         else
                         {   // 正常に終了を受信
@@ -267,21 +291,23 @@ namespace ChatSystem
                 }
                 else
                 {   // 送信
-
-                    string inputSt = GetJankenHand().ToString();
-
-                    if (inputSt.Length > maxLength)
+                    if (connectMode == ChatSystem.ConnectMode.client)
                     {
-                        inputSt = inputSt.Substring(0, maxLength - EOF.Length);
-                    }
-                    inputSt += EOF;
-                    buffer.content = Encoding.UTF8.GetBytes(inputSt);
-                    buffer.length = buffer.content.Length;
-                    ChatSystem.EResult re = chatSystem.Send(buffer);
-                    if (re != ChatSystem.EResult.success)
-                    {
-                        Console.WriteLine($"送信エラー：{re.ToString()} Error code: {chatSystem.resultMessage}");
-                        break;
+                        string inputSt = GetJankenHand().ToString();
+
+                        if (inputSt.Length > maxLength)
+                        {
+                            inputSt = inputSt.Substring(0, maxLength - EOF.Length);
+                        }
+                        inputSt += EOF;
+                        buffer.content = Encoding.UTF8.GetBytes(inputSt);
+                        buffer.length = buffer.content.Length;
+                        ChatSystem.EResult re = chatSystem.Send(buffer);
+                        if (re != ChatSystem.EResult.success)
+                        {
+                            Console.WriteLine($"送信エラー：{re.ToString()} Error code: {chatSystem.resultMessage}");
+                            break;
+                        }
                     }
                 }
                 turn = !turn;
