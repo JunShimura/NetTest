@@ -368,20 +368,20 @@ namespace ChatSystem
                         if (received[0] != '\0')
                         {   // 正常にメッセージを受信
                             Console.WriteLine($"相手から：{received}");
-                            if(lastReceived == string.Empty)
+                            if (lastReceived == string.Empty)
                             {
                                 lastReceived = received;
                             }
                             else
                             {
-                                var reveivedLastCharacter = received[received.Length - 1];
-                                if (received[received.Length-1]=='ん'　|| received[received.Length - 1] == 'ン')
+                                var receivedLastCharacter = GetLastchar(received);
+                                if (receivedLastCharacter == 'ん' || receivedLastCharacter == 'ン')
                                 {
                                     Console.WriteLine("最後に「ん」が付いてるのであなたの勝ちです！");
                                     SendString("最後に「ん」が付いてるのであなたの負けです");
                                     break;
                                 }
-                                else if (received[0] == lastSent[lastSent.Length - 1])
+                                else if (lastSent[0] == receivedLastCharacter)
                                 {
                                     Console.WriteLine("正常");
                                     lastReceived = received;
@@ -415,11 +415,11 @@ namespace ChatSystem
                 {   // 送信
                     Console.Write("送るメッセージ：");
                     string inputSt = Console.ReadLine();    // 入力文字で送信
+                    lastSent = inputSt;
                     if (inputSt.Length > maxLength)
                     {
                         inputSt = inputSt.Substring(0, maxLength - EOF.Length);
                     }
-                    lastSent = inputSt;
                     inputSt += EOF;
                     buffer.content = Encoding.UTF8.GetBytes(inputSt);
                     buffer.length = buffer.content.Length;
@@ -452,5 +452,19 @@ namespace ChatSystem
             }
             return re;
         }
+        static char GetLastchar(string s)
+        {
+            char result = '\0';
+            for (var i = s.Length - 1; i > 0; i--)
+            {
+                result = s[i];
+                if (result != '\0')
+                {
+                    break;
+                }
+            }
+            return result;
+        }
+
     }
 }
