@@ -372,6 +372,32 @@ namespace ChatSystem
                             {
                                 lastReceived = received;
                             }
+                            else
+                            {
+                                var reveivedLastCharacter = received[received.Length - 1];
+                                if (received[received.Length-1]=='ん'　|| received[received.Length - 1] == 'ン')
+                                {
+                                    Console.WriteLine("最後に「ん」が付いてるのであなたの勝ちです！");
+                                    SendString("最後に「ん」が付いてるのであなたの負けです");
+                                    break;
+                                }
+                                else if (received[0] == lastSent[lastSent.Length - 1])
+                                {
+                                    Console.WriteLine("正常");
+                                    lastReceived = received;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("言葉がつながりません");
+                                    var sendResult = SendString("言葉がつながりません");
+                                    if (sendResult != ChatSystem.EResult.success)
+                                    {
+                                        Console.WriteLine("相手に送信できませんでした");
+                                        break;
+                                    }
+                                    turn = !turn;
+                                }
+                            }
                         }
                         else
                         {   // 正常に終了を受信
@@ -393,6 +419,7 @@ namespace ChatSystem
                     {
                         inputSt = inputSt.Substring(0, maxLength - EOF.Length);
                     }
+                    lastSent = inputSt;
                     inputSt += EOF;
                     buffer.content = Encoding.UTF8.GetBytes(inputSt);
                     buffer.length = buffer.content.Length;
@@ -407,6 +434,23 @@ namespace ChatSystem
             }
             chatSystem.ShutDownColse();
 
+        }
+        static ChatSystem.EResult SendString(string s)
+        {
+            if (s.Length > maxLength)
+            {
+                s = s.Substring(0, maxLength - EOF.Length);
+            }
+            s += EOF;
+            var buffer = new ChatSystem.Buffer(maxLength);
+            buffer.content = Encoding.UTF8.GetBytes(s);
+            buffer.length = buffer.content.Length;
+            ChatSystem.EResult re = chatSystem.Send(buffer);
+            if (re != ChatSystem.EResult.success)
+            {
+                Console.WriteLine($"送信エラー：{re.ToString()} Error code: {chatSystem.resultMessage}");
+            }
+            return re;
         }
     }
 }
