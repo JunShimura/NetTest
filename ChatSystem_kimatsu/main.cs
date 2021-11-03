@@ -356,8 +356,6 @@ namespace ChatSystem
             string lastReceived = string.Empty;
             string lastSent = string.Empty;
             const string errorHeader = "エラー：";
-
-
             while (true)
             {
                 if (turn)
@@ -371,40 +369,29 @@ namespace ChatSystem
                         if (received[0] != '\0')
                         {   // 正常にメッセージを受信
                             Console.WriteLine($"相手から：{received}");
-                            if (lastReceived == string.Empty)
+                            if (!received.Contains(errorHeader))
                             {
-                                lastReceived = received;
-                            }
-                            else
-                            {
-                                if (!received.Contains(errorHeader))
+                                var receivedLastCharacter = GetLastchar(received);
+                                if (receivedLastCharacter == 'ん' || receivedLastCharacter == 'ン')
                                 {
-                                    var receivedLastCharacter = GetLastchar(received);
-                                    if (receivedLastCharacter == 'ん' || receivedLastCharacter == 'ン')
-                                    {
-                                        Console.WriteLine("最後に「ん」が付いてるのであなたの勝ちです！");
-                                        SendString("最後に「ん」が付いてるのであなたの負けです");
-                                        break;
-                                    }
-                                    else if (GetLastchar(lastSent) == received[0])
-                                    {
-                                        Console.WriteLine("正常");
-                                        lastReceived = received;
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("言葉がつながりません");
-                                        var sendResult = SendString("エラー：言葉がつながりません");
-                                        if (sendResult != ChatSystem.EResult.success)
-                                        {
-                                            Console.WriteLine("相手に送信できませんでした");
-                                            break;
-                                        }
-                                        turn = !turn;
-                                    }
+                                    Console.WriteLine("最後に「ん」が付いてるのであなたの勝ちです！");
+                                    SendString("最後に「ん」が付いてるのであなたの負けです");
+                                    break;
+                                }
+                                else if (GetLastchar(lastSent) == received[0]||lastReceived==string.Empty)
+                                {
+                                    Console.WriteLine("正常");
+                                    lastReceived = received;
                                 }
                                 else
                                 {
+                                    Console.WriteLine("言葉がつながりません");
+                                    var sendResult = SendString( errorHeader+ "言葉がつながりません");
+                                    if (sendResult != ChatSystem.EResult.success)
+                                    {
+                                        Console.WriteLine("相手に送信できませんでした");
+                                        break;
+                                    }
                                     turn = !turn;
                                 }
                             }
