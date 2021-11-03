@@ -381,7 +381,7 @@ namespace ChatSystem
                                     SendString("最後に「ん」が付いてるのであなたの負けです");
                                     break;
                                 }
-                                else if (lastSent[0] == receivedLastCharacter)
+                                else if (GetLastchar( lastSent) == received[0])
                                 {
                                     Console.WriteLine("正常");
                                     lastReceived = received;
