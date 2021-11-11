@@ -355,7 +355,7 @@ namespace ChatSystem
             bool turn = (connectMode == ChatSystem.ConnectMode.host);
             string lastReceived = string.Empty;
             string lastSent = string.Empty;
-            const string errorHeader = "エラー：";
+            const string ERROR_HEADER = "エラー：";
             while (true)
             {
                 if (turn)
@@ -364,12 +364,11 @@ namespace ChatSystem
                     ChatSystem.EResult re = chatSystem.Receive(buffer);
                     if (re == ChatSystem.EResult.success)
                     {
-                        string received = Encoding.UTF8.GetString(buffer.content).Replace(EOF, "");
-                        int l = received.Length;
+                        string received = Encoding.UTF8.GetString(buffer.content,0,buffer.length).Replace(EOF, "");
                         if (received[0] != '\0')
                         {   // 正常にメッセージを受信
                             Console.WriteLine($"相手から：{received}");
-                            if (!received.Contains(errorHeader))
+                            if (!received.Contains(ERROR_HEADER))
                             {
                                 var receivedLastCharacter = GetLastchar(received);
                                 if (receivedLastCharacter == 'ん' || receivedLastCharacter == 'ン')
@@ -386,7 +385,7 @@ namespace ChatSystem
                                 else
                                 {
                                     Console.WriteLine("言葉がつながりません");
-                                    var sendResult = SendString( errorHeader+ "言葉がつながりません");
+                                    var sendResult = SendString( ERROR_HEADER+ "言葉がつながりません");
                                     if (sendResult != ChatSystem.EResult.success)
                                     {
                                         Console.WriteLine("相手に送信できませんでした");

@@ -162,10 +162,9 @@ namespace ChatSystem
         {
             if (_chatSocket != null)
             {   // 初期化済み
-                int bytesRec;
                 try
                 {
-                    bytesRec = _chatSocket.Receive(buffer.content, buffer.capacity, SocketFlags.None);
+                    buffer.length = _chatSocket.Receive(buffer.content, buffer.capacity, SocketFlags.None);
                 }
                 catch (SocketException e)
                 {
