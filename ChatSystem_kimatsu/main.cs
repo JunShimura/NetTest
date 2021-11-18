@@ -41,6 +41,7 @@ namespace ChatSystem
                     Console.WriteLine("not suported");
                     break;
             }
+            chatSystem.ShutDownColse();
         }
         static FunctionMode SelectFunction()
         {
@@ -177,7 +178,6 @@ namespace ChatSystem
                 }
                 turn = !turn;
             }
-            chatSystem.ShutDownColse();
         }
 
         static void InChat()
@@ -230,7 +230,6 @@ namespace ChatSystem
                 }
                 turn = !turn;
             }
-            chatSystem.ShutDownColse();
         }
 
         static string[] hand = { "ぐう", "ちょき", "ぱあ" };
@@ -329,7 +328,6 @@ namespace ChatSystem
                 }
                 turn = !turn;
             }
-            chatSystem.ShutDownColse();
         }
 
         static bool GetJankenHand(out int h )
@@ -434,7 +432,7 @@ namespace ChatSystem
                         {
                             Console.WriteLine("最後に「ん」が付いてるのであなたの負けです");
                             SendString($"「{inputSt}」が送られました、最後に「ん」が付いてるのであなたの勝ちです");
-                            break;
+                            return;
                         }
                         if (inputSt.Length >= maxLength)
                         {   //　文字列が長すぎ
@@ -468,8 +466,6 @@ namespace ChatSystem
                 }
                 turn = !turn;
             }
-            chatSystem.ShutDownColse();
-
         }
         static ChatSystem.EResult SendString(string s)
         {
@@ -501,6 +497,5 @@ namespace ChatSystem
             }
             return result;
         }
-
     }
 }
