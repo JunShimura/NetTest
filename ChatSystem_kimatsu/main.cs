@@ -123,7 +123,7 @@ namespace ChatSystem
                     ChatSystem.EResult re = chatSystem.Receive(buffer);
                     if (re == ChatSystem.EResult.success)
                     {
-                        received = Encoding.UTF8.GetString(buffer.content).Replace(EOF, "");
+                        received = Encoding.UTF8.GetString(buffer.content, 0, buffer.length).Replace(EOF, "");
                         int l = received.Length;
                         if (received.Length!=0)
                         {   // 正常にメッセージを受信
@@ -192,7 +192,7 @@ namespace ChatSystem
                     ChatSystem.EResult re = chatSystem.Receive(buffer);
                     if (re == ChatSystem.EResult.success)
                     {
-                        string received = Encoding.UTF8.GetString(buffer.content).Replace(EOF, "");
+                        string received = Encoding.UTF8.GetString(buffer.content, 0, buffer.length).Replace(EOF, "");
                         int l = received.Length;
                         if (received.Length!=0)
                         {   // 正常にメッセージを受信
@@ -247,7 +247,7 @@ namespace ChatSystem
                     ChatSystem.EResult re = chatSystem.Receive(buffer);
                     if (re == ChatSystem.EResult.success)
                     {
-                        string received = Encoding.UTF8.GetString(buffer.content).Replace(EOF, "");
+                        string received = Encoding.UTF8.GetString(buffer.content, 0, buffer.length).Replace(EOF, "");
                         int l = received.Length;
                         if (received.Length!=0)
                         {   // 正常にメッセージを受信
@@ -306,8 +306,12 @@ namespace ChatSystem
                 {   // 送信
                     if (connectMode == ChatSystem.ConnectMode.client)
                     {
-                        string inputSt = GetJankenHand().ToString();
-
+                        int h;
+                        string inputSt = string.Empty;
+                        if (GetJankenHand(out h))
+                        {
+                            inputSt = h.ToString();
+                        }
                         if (inputSt.Length > maxLength)
                         {
                             inputSt = inputSt.Substring(0, maxLength - EOF.Length);
@@ -328,7 +332,7 @@ namespace ChatSystem
             chatSystem.ShutDownColse();
         }
 
-        static int GetJankenHand()
+        static bool GetJankenHand(out int h )
         {
             Console.WriteLine("じゃんけんをしましょう！");
             for (var i = 0; i < hand.Length; i++)
@@ -336,18 +340,30 @@ namespace ChatSystem
                 Console.WriteLine($"{i}:{hand[i]}");
             }
             string inputSt = string.Empty;
+            h = -1;
             int inputNum;
+            bool sucess;
             while (true)
             {
                 inputSt = Console.ReadLine();    // 入力文字
-                if (int.TryParse(inputSt, out inputNum) && inputNum >= 0 && inputNum < hand.Length)
+                if (inputSt.Length != 0)
                 {
-                    Console.WriteLine($"あなたの手は{hand[inputNum]}ですね");
+                    if (int.TryParse(inputSt, out inputNum) && inputNum >= 0 && inputNum < hand.Length)
+                    {
+                        Console.WriteLine($"あなたの手は{hand[inputNum]}ですね");
+                        h = inputNum;
+                        sucess = true;
+                        break;
+                    }
+                    Console.WriteLine("規定の数値を入力してください");
+                }
+                else
+                {
+                    sucess = false;
                     break;
                 }
-                Console.WriteLine("規定の数値を入力してください");
             }
-            return inputNum;
+            return sucess;
         }
         static void InChatshiritori()
         {
