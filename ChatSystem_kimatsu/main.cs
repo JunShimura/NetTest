@@ -430,6 +430,12 @@ namespace ChatSystem
                     while (true)
                     {
                         inputSt = Console.ReadLine();    // 入力文字
+                        if (inputSt[inputSt.Length-1] == 'ん' || inputSt[inputSt.Length - 1] == 'ン')
+                        {
+                            Console.WriteLine("最後に「ん」が付いてるのであなたの負けです");
+                            SendString($"「{inputSt}」が送られました、最後に「ん」が付いてるのであなたの勝ちです");
+                            break;
+                        }
                         if (inputSt.Length >= maxLength)
                         {   //　文字列が長すぎ
                             Console.WriteLine("文字列が長すぎます");
