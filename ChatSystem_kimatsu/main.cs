@@ -419,8 +419,8 @@ namespace ChatSystem
                             Console.WriteLine("文字列が長すぎます");
                             continue;
                         }
-                        else if (lastReceived[lastReceived.Length - 1] != inputSt[0])
-                        {   //　文字列が長すぎ
+                        else if (lastReceived!=string.Empty && lastReceived[lastReceived.Length - 1] != inputSt[0])
+                        {   //　文字がつながらない
                             Console.WriteLine("文字がつながりません");
                             continue;
                         }
