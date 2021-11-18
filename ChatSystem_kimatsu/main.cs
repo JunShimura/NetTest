@@ -125,7 +125,7 @@ namespace ChatSystem
                     {
                         received = Encoding.UTF8.GetString(buffer.content).Replace(EOF, "");
                         int l = received.Length;
-                        if (received[0] != '\0')
+                        if (received.Length!=0)
                         {   // 正常にメッセージを受信
                             Console.WriteLine($"受信メッセージ：{received}");
                         }
@@ -194,7 +194,7 @@ namespace ChatSystem
                     {
                         string received = Encoding.UTF8.GetString(buffer.content).Replace(EOF, "");
                         int l = received.Length;
-                        if (received[0] != '\0')
+                        if (received.Length!=0)
                         {   // 正常にメッセージを受信
                             Console.WriteLine($"受信メッセージ：{received}");
                         }
@@ -249,7 +249,7 @@ namespace ChatSystem
                     {
                         string received = Encoding.UTF8.GetString(buffer.content).Replace(EOF, "");
                         int l = received.Length;
-                        if (received[0] != '\0')
+                        if (received.Length!=0)
                         {   // 正常にメッセージを受信
                             if (connectMode == ChatSystem.ConnectMode.host)
                             {
@@ -364,8 +364,8 @@ namespace ChatSystem
                     ChatSystem.EResult re = chatSystem.Receive(buffer);
                     if (re == ChatSystem.EResult.success)
                     {
-                        string received = Encoding.UTF8.GetString(buffer.content,0,buffer.length).Replace(EOF, "");
-                        if (received[0] != '\0')
+                        string received = Encoding.UTF8.GetString(buffer.content, 0, buffer.length).Replace(EOF, "");
+                        if (received.Length != 0)
                         {   // 正常にメッセージを受信
                             Console.WriteLine($"相手から：{received}");
                             if (!received.Contains(ERROR_HEADER))
@@ -377,7 +377,7 @@ namespace ChatSystem
                                     SendString("最後に「ん」が付いてるのであなたの負けです");
                                     break;
                                 }
-                                else if (GetLastchar(lastSent) == received[0]||lastReceived==string.Empty)
+                                else if (GetLastchar(lastSent) == received[0] || lastReceived == string.Empty)
                                 {
                                     Console.WriteLine("正常");
                                     lastReceived = received;
@@ -385,7 +385,7 @@ namespace ChatSystem
                                 else
                                 {
                                     Console.WriteLine("言葉がつながりません");
-                                    var sendResult = SendString( ERROR_HEADER+ "言葉がつながりません");
+                                    var sendResult = SendString(ERROR_HEADER + "言葉がつながりません");
                                     if (sendResult != ChatSystem.EResult.success)
                                     {
                                         Console.WriteLine("相手に送信できませんでした");
@@ -419,7 +419,7 @@ namespace ChatSystem
                             Console.WriteLine("文字列が長すぎます");
                             continue;
                         }
-                        else if (lastReceived!=string.Empty && lastReceived[lastReceived.Length - 1] != inputSt[0])
+                        else if (lastReceived != string.Empty && lastReceived[lastReceived.Length - 1] != inputSt[0])
                         {   //　文字がつながらない
                             Console.WriteLine("文字がつながりません");
                             continue;
