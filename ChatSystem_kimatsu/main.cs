@@ -410,7 +410,25 @@ namespace ChatSystem
                 else
                 {   // 送信
                     Console.Write("送るメッセージ：");
-                    string inputSt = Console.ReadLine();    // 入力文字で送信
+                    string inputSt;  // 入力文字
+                    while (true)
+                    {
+                        inputSt = Console.ReadLine();    // 入力文字
+                        if (inputSt.Length >= maxLength)
+                        {   //　文字列が長すぎ
+                            Console.WriteLine("文字列が長すぎます");
+                            continue;
+                        }
+                        else if (lastReceived[lastReceived.Length - 1] != inputSt[0])
+                        {   //　文字列が長すぎ
+                            Console.WriteLine("文字がつながりません");
+                            continue;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
                     lastSent = inputSt;
                     if (inputSt.Length > maxLength)
                     {
