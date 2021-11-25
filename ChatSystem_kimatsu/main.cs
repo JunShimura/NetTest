@@ -370,6 +370,8 @@ namespace ChatSystem
             string lastReceived = string.Empty;
             string lastSent = string.Empty;
             const string ERROR_HEADER = "エラー：";
+            List<string> usedWord = new List<string>();
+
             while (true)
             {
                 if (turn)
@@ -391,10 +393,17 @@ namespace ChatSystem
                                     SendString("最後に「ん」が付いてるのであなたの負けです");
                                     break;
                                 }
+                                else if (usedWord.Contains(received))
+                                {
+                                    Console.WriteLine("前に出た単語が来たのであなたの勝ちです！");
+                                    SendString("前に出た単語なのであなたの負けです");
+                                    break;
+                                }
                                 else if (GetLastchar(lastSent) == received[0] || lastReceived == string.Empty)
                                 {
                                     Console.WriteLine("正常");
                                     lastReceived = received;
+                                    usedWord.Add(received);
                                 }
                                 else
                                 {
@@ -433,6 +442,11 @@ namespace ChatSystem
                             Console.WriteLine("最後に「ん」が付いてるのであなたの負けです");
                             SendString($"「{inputSt}」が送られました、最後に「ん」が付いてるのであなたの勝ちです");
                             return;
+                        }
+                        if (usedWord.Contains(inputSt))
+                        {
+                            Console.WriteLine("一度、出た単語です");
+                            continue;
                         }
                         if (inputSt.Length >= maxLength)
                         {   //　文字列が長すぎ
