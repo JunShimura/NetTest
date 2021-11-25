@@ -464,6 +464,7 @@ namespace ChatSystem
                         }
                     }
                     lastSent = inputSt;
+                    usedWord.Add(inputSt);
                     if (inputSt.Length > maxLength)
                     {
                         inputSt = inputSt.Substring(0, maxLength - EOF.Length);
